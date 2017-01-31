@@ -3,7 +3,7 @@
     "version":"1.0.0+0",
     "author":"Christoph Schmitz",
     "homepage":"https://github.com/chrisschmitz/commandbox-hostupdater/",
-    "documentation":"https://github.com/chrisschmitz/commandbox-hostupdater/README.md",
+    "documentation":"https://github.com/chrisschmitz/commandbox-hostupdater/blob/master/README.md",
     "repository":{
         "type":"Git",
         "URL":"https://github.com/chrisschmitz/commandbox-hostupdater/"
