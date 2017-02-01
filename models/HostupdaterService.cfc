@@ -1,51 +1,48 @@
 component accessors="true" singleton {
-	property name='fileSystemUtil';
-	property name='hostsFile';
-	property name='crlf';
-	property name='printBuffer';
-	property name="wireBox";
+	property name='printBuffer' inject='PrintBuffer';
+	property name='fileSystem' inject='FileSystem';
 	
-	public any function init( any wirebox ) {
-
-		variables.wirebox = arguments.wirebox;
-		variables.fileSystemUtil = variables.wirebox.getInstance( "FileSystem" );
-		variables.printBuffer 	 = variables.wireBox.getInstance( 'PrintBuffer' );
-
-		var osname = fileSystemUtil.isMac() ? 'mac' :  fileSystemUtil.isLinux() ? 'linux' : 'windows';
-	
-		switch ( osname ){
-			case 'windows':
-				variables.hostsFile = 'C:/Windows/system32/drivers/etc/hosts';
-				variables.crlf      = chr( 13 ) & chr( 10 );
-				break;
-
-			case 'linux':
-				variables.hostsFile = '/etc/hosts';
-				variables.crlf      = chr( 10 );
-				break;
-
-			case 'mac':
-				variables.hostsFile = '/private/etc/hosts';
-				variables.crlf      = chr( 10 );
-				break;
-
-			default:
-				variables.hostsFile = '';
-				variables.crlf      = '';
-		}
-
+	public any function init() {
+		
 		return this;
 	}
 
 	public void function checkIP ( string hostname='' ) {
+		var osname  = variables.fileSystem.isMac() ? 'mac' :  variables.fileSystem.isLinux() ? 'linux' : 'windows';
+		var newline = chr( 10 );
+	
+		switch ( osname ){
+			case 'windows':
+				var hostsFile = 'C:/Windows/system32/drivers/etc/hosts'
+				newline 	  = chr( 13 ) & chr( 10 );
+				break;
+
+			case 'linux':
+				var hostsFile = '/etc/hosts';
+				break;
+
+			case 'mac':
+				var hostsFile = '/private/etc/hosts';
+				break;
+
+			default:
+				var hostsFile = '';
+		}
+
 		if ( hostsFile.len() && arguments.hostname.len() && reFindNoCase( '[a-z]', arguments.hostname ) ) {
 			var hosts = fileRead( hostsFile );
 
 			if( !findNoCase( arguments.hostname, hosts ) ) {
-				printBuffer.greenLine( "Adding host '#arguments.hostname#' to your hosts file!" ).toConsole(); 
-				var new_ip = getNewIP( hosts );
-				fileAppend( hostsFile, "#crlf##crlf######### Added by CommandBox #dateTimeFormat( now(), 'yyyy-mm-dd HH:nn:ss' )# ########" );
-				fileAppend( hostsFile, '#crlf##new_ip#	#arguments.hostname#');
+				try {
+					variables.printBuffer.greenLine( "Adding host '#arguments.hostname#' to your hosts file!" ).toConsole(); 
+					var new_ip = getNewIP( hosts );
+
+					fileAppend( hostsFile, "#newline##newline######### Added by CommandBox #dateTimeFormat( now(), 'yyyy-mm-dd HH:nn:ss' )# ########" );
+					fileAppend( hostsFile, '#newline##new_ip#	#arguments.hostname#');
+				}
+				catch( any e ) {
+					variables.printBuffer.boldRedLine( "Can't write to hosts file. Did you remember to start CommandBox with admin privileges?").toConsole();
+				}
 			}
 		}
 
