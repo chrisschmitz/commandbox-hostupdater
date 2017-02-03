@@ -1,7 +1,6 @@
 component accessors="true" singleton {
 	property name='printBuffer'   inject='PrintBuffer';
 	property name='fileSystem' 	  inject='FileSystem';
-	property name='serverService' inject='ServerService';
 	
 	public any function init() {
 		
