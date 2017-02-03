@@ -8,10 +8,10 @@ The module works on Windows, Linux, and OS-X
 
 ## Installation
 
-Install the module by dropping the entire 'commandbox-hostupdater' folder into your CommandBox modules folder.
-[//]: # "```bash"
-[//]: # "CommandBox> install commandbox-banner-customizer"
-[//]: # "```"
+You can install the module from within CommandBox by executing the install command:
+```bash
+CommandBox> install commandbox-hostupdater
+```
 
 ### Usage
 *In order for the module to be able to modify your hosts file you need to start CommandBox with administrator privileges.*
@@ -21,7 +21,7 @@ Just provide a host name for your server.
 ```bash
 CommandBox> server start host=myproject.local
 ```
-The module will add 'myproject.local' to your hosts file. All entries added by the module will be marked with a comment `Added by CommandBox` and add a time stamp to that comment.
+The module will add the host name (here 'myproject.local') to your hosts file. All entries added by the module will be marked with a comment `# CommandBox <Server-ID> <current timestamp>`.
 
 ### Location of the hosts file
 

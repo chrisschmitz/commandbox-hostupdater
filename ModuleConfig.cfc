@@ -6,7 +6,11 @@ component accessors=true {
 
 	
 	public void function preServerStart( interceptData ) {
-		wirebox.getInstance( 'hostupdaterService@commandbox-hostupdater' ).checkIP( arguments.interceptData.serverprops.host ?: '' );
+		var hostname = 	arguments.interceptData.serverProps.host 				  ?: 			// host provided on the command line?
+						arguments.interceptData.serverDetails.serverJSON.web.host ?:			// host provided in server.json?
+						wirebox.getInstance( 'ServerService' ).getDefaultServerJSON().web.host; // if nothing was provided, use default (127.0.0.1)
+
+		wirebox.getInstance( 'hostupdaterService@commandbox-hostupdater' ).checkIP( arguments.interceptData.serverDetails.serverInfo.id, hostname );
 
 		return;
 	}
