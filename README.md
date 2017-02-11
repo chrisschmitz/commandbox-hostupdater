@@ -41,7 +41,9 @@ It detects the highest used IP address in that range and increase that by 1. Tha
 
 ### Forgetting a server
 
-If you tell CommandBox to forget a server ```bash
+If you tell CommandBox to forget a server:
+```bash
 CommandBox> server forget my-fancy-server
-```, the module will remove any host name that you may have assigned to that server from the hosts file.
+```
+the module will remove any host name that you may have assigned to that server from the hosts file.
 
