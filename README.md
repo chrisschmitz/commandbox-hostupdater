@@ -21,7 +21,7 @@ Just provide a host name for your server.
 ```bash
 CommandBox> server start host=myproject.local
 ```
-The module will add the host name (here 'myproject.local') to your hosts file. All entries added by the module will be marked with a comment `# CommandBox <Server-ID> <current timestamp>`.
+The module will first remove any host names that you previously assigned *to the same server* and then add the host name (here 'myproject.local') to your hosts file. All entries added by the module will be marked with a comment `# CommandBox <Server-ID> <current timestamp>`.
 
 ### Location of the hosts file
 
@@ -38,4 +38,10 @@ OS-X | /private/etc/hosts
 In order to avoid conflicts with other IP addresses you may assign manually, the module only uses IP addresses in the range 127.127.0.1 to 127.127.255.255.
 
 It detects the highest used IP address in that range and increase that by 1. That gives you 255 x 255 = 65.025 IP addresses to use. 
+
+### Forgetting a server
+
+If you tell CommandBox to forget a server ```bash
+CommandBox> server forget my-fancy-server
+```, the module will remove any host name that you may have assigned to that server from the hosts file.
 

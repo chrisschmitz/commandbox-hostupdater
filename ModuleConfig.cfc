@@ -14,4 +14,11 @@ component accessors=true {
 
 		return;
 	}
+
+	public void function postServerForget( interceptData ) {
+		
+		wirebox.getInstance( 'hostupdaterService@commandbox-hostupdater' ).forgetServer( arguments.interceptData.serverInfo.id );
+
+		return;
+	}
 }

@@ -1,88 +1,17 @@
 {
     "name":"CommandBox Host Updater",
-    "version":"1.0.1",
+    "version":"1.0.2+0",
     "author":"Christoph Schmitz",
-    "location":"chrisschmitz/commandbox-hostupdater#v1.0.0",
-    "directory":"",
-    "createPackageDirectory":true,
-    "packageDirectory":"",
     "homepage":"https://github.com/chrisschmitz/commandbox-hostupdater/",
-    "documentation":"",
+    "documentation":"https://github.com/chrisschmitz/commandbox-hostupdater/README.md",
     "repository":{
-        "type":"",
-        "URL":""
+        "type":"Git",
+        "URL":"https://github.com/chrisschmitz/commandbox-hostupdater/"
     },
-    "bugs":"",
+    "bugs":"https://github.com/chrisschmitz/commandbox-hostupdater/issues",
     "slug":"commandbox-hostupdater",
-    "shortDescription":"Adds the host name you assign to your server to your system's hosts file",
-    "description":"",
-    "instructions":"",
-    "changelog":"",
+    "shortDescription":"Adds the host name you assign to a CommandBox server to the hosts file.",
+    "description":"This module adds the host name you assign to a CommandBox server to the hosts file. It assumes standard paths to the hosts file on Windows, Linux and OS-X.",
     "type":"commandbox-modules",
-    "keywords":"cfml,coldfusion,lucee,server,",
-    "private":false,
-    "engines":[
-        {
-            "type":"",
-            "version":""
-        }
-    ],
-    "defaultEngine":"",
-    "defaultPort":0,
-    "projectURL":"",
-    "license":[
-        {
-            "type":"",
-            "URL":""
-        }
-    ],
-    "contributors":[
-        
-    ],
-    "dependencies":{
-        
-    },
-    "devDependencies":{
-        
-    },
-    "installPaths":{
-        
-    },
-    "scripts":{
-        "postVersion":"package set location='chrisschmitz/commandbox-hostupdater#v`package version`'",
-        "postPublish":"!git push --follow-tags"
-    },
-    "ignore":[
-        "test",
-        "tests"
-    ],
-    "testbox":{
-        "runner":[
-            {
-                "default":""
-            }
-        ],
-        "labels":[
-            
-        ],
-        "reporter":"",
-        "reporterResults":"",
-        "bundles":[
-            ""
-        ],
-        "directory":{
-            "mapping":"",
-            "recurse":true
-        },
-        "watchers":[
-            
-        ],
-        "notify":{
-            "emails":[
-                
-            ],
-            "growl":"",
-            "URL":""
-        }
-    }
+    "projectURL":"https://github.com/chrisschmitz/commandbox-hostupdater/"
 }
