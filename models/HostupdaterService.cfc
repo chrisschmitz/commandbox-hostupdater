@@ -91,8 +91,8 @@ component accessors="true" singleton {
 								return address.listLast( '.' );
 						  }).sort( 'numeric', 'desc' )[1];
 
-			group_3 = group_4 < 255 ? group_3 	: group_3++;
-			group_4 = group_4 < 255 ? group_4++ : 1;
+			group_3 = group_4 < 255 ? group_3 	: group_3+1;
+			group_4 = group_4 < 255 ? group_4+1 : 1;
 
 			var new_ip = '127.127.#group_3#.#group_4#';
 		}
