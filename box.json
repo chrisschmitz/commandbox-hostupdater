@@ -8,11 +8,16 @@
         "type":"Git",
         "URL":"https://github.com/chrisschmitz/commandbox-hostupdater/"
     },
-	"location":"chrisschmitz/commandbox-hostupdater#v`1.2.0`",
+    "location":"chrisschmitz/commandbox-hostupdater",
     "bugs":"https://github.com/chrisschmitz/commandbox-hostupdater/issues",
     "slug":"commandbox-hostupdater",
     "shortDescription":"Adds the host name you assign to a CommandBox server to the hosts file.",
     "description":"This module adds the host name you assign to a CommandBox server to the hosts file. It assumes standard paths to the hosts file on Windows, Linux and OS-X.",
     "type":"commandbox-modules",
-    "projectURL":"https://github.com/chrisschmitz/commandbox-hostupdater/"
+    "projectURL":"https://github.com/chrisschmitz/commandbox-hostupdater/",
+    "scripts":{
+        "postVersion":"package set location='chrisschmitz/commandbox-hostupdater#v`package version`'",
+        "onRelease":"publish",
+        "postPublish":"!git push && !git push --tags"
+    }
 }
