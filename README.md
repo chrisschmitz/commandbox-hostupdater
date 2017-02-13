@@ -2,7 +2,8 @@ If you're like me, you prefer host names over IP addresses for your local develo
 
 ## Requirements
 
-The module works on Windows, Linux, and OS-X.  CommandBox `3.5.0` is also required for the module to work.  If you try on a previous version, your hosts file will not get updated.
+* **Operating system** - Windows, Linux, or OS-X
+* **CommandBox version** - CommandBox `3.5.0`
 
 ## Installation
 
