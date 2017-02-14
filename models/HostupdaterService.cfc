@@ -22,7 +22,7 @@ component accessors="true" singleton {
 			hosts =  removeMatchingLines( hosts, [arguments.hostname,arguments.server_id] );
 
 			variables.printBuffer.greenLine( "Adding host '#arguments.hostname#' to your hosts file!" ).toConsole(); 
-			var new_ip = getNewIP( hosts );
+			var new_ip = getNewIP( hosts.toList( server.separator.line ) );
 			// add the line for the new host entry
 			hosts.append( "#server.separator.line##new_ip#	#arguments.hostname# ## CommandBox: Server #arguments.server_id# #dateTimeFormat( now(), 'yyyy-mm-dd HH:nn:ss' )#" );
 			
