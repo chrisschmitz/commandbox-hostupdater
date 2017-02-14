@@ -19,16 +19,18 @@ component accessors="true" singleton {
 			// remove all lines that already contain either the server id or the host name
 			// that way we can make sure that the hosts file doesn't grow indefinitely upon
 			// changing the host name for an existing server
-			hosts =  removeMatchingLines( hosts, [arguments.hostname,arguments.server_id] )
-					.toList( server.separator.line ); // concatenate the array
+			hosts =  removeMatchingLines( hosts, [arguments.hostname,arguments.server_id] );
 
 			variables.printBuffer.greenLine( "Adding host '#arguments.hostname#' to your hosts file!" ).toConsole(); 
-			var new_ip = getNewIP( hosts );
-			hosts=hosts.listAppend( "#server.separator.line##new_ip#	#arguments.hostname# ## CommandBox: Server #arguments.server_id# #dateTimeFormat( now(), 'yyyy-mm-dd HH:nn:ss' )#", server.separator.line ) // add the line for the new host entry
-					
-			saveHostsFile( hostsFile, hosts );
-				
+			var new_ip = getNewIP( hosts.toList( server.separator.line ) );
+			// add the line for the new host entry
+			hosts.append( "#new_ip#	#arguments.hostname# ## CommandBox: Server #arguments.server_id# #dateTimeFormat( now(), 'yyyy-mm-dd HH:nn:ss' )#" );
 			
+			// concatenate the array
+			saveHostsFile( hostsFile, hosts.toList( server.separator.line ) );
+			
+			// Give the OS a chance to write the file
+			sleep( 300 );
 		}
 
 		return;
