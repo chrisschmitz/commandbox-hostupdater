@@ -27,7 +27,10 @@ component accessors="true" singleton {
 			hosts.append( "#new_ip#	#arguments.hostname# ## CommandBox: Server #arguments.server_id# #dateTimeFormat( now(), 'yyyy-mm-dd HH:nn:ss' )#" );
 			
 			// concatenate the array
-			saveHostsFile( hostsFile, hosts.toList( server.separator.line ) );			
+			saveHostsFile( hostsFile, hosts.toList( server.separator.line ) );
+			
+			// Give the OS a chance to write the file
+			sleep( 300 );
 		}
 
 		return;
