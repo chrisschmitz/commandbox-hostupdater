@@ -101,6 +101,12 @@ component accessors="true" singleton {
 		else 
 			var new_ip = '127.127.0.1';
 
+		// MacOS per default only recognizes 127.0.0.1 as local address
+		// in order for it to accept other addresses, we must tell
+		// MacOS that this new address is a local loopback address, too
+		if( variables.fileSystem.isMac() )
+			cfexecute (name="ifconfig" arguments="lo0 alias #new_ip# up");
+
 		return new_ip;
 	}
 

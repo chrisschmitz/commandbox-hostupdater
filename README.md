@@ -2,7 +2,7 @@ If you're like me, you prefer host names over IP addresses for your local develo
 
 ## Requirements
 
-* **Operating system** - Windows, Linux, or OS-X
+* **Operating system** - Windows, Linux, or Mac OS
 * **CommandBox version** - CommandBox `3.5.0`
 
 ## Installation
@@ -14,6 +14,7 @@ CommandBox> install commandbox-hostupdater
 
 ### Usage
 *In order for the module to be able to modify your hosts file you need to start CommandBox with administrator privileges.*
+*For Mac and Linux users that means you have to start CommandBox with `sudo box`*
 
 Just provide a host name for your server.
 
@@ -28,7 +29,7 @@ The module assumes the following paths to the hosts file
 
 * **Windows** - `C:\Windows\System32\drivers\etc\hosts`
 * **Linux** - `/etc/hosts`
-* **OS-X** - `/private/etc/hosts`
+* **Mac OS** - `/private/etc/hosts`
 
 ### IP addresses
 
