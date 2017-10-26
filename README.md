@@ -41,8 +41,8 @@ Please note, this will NOT work if you have another web server such as Apache th
 ```bash
 # On Windows
 C:\> netstat -ban | find ":80"
-# On Unix
-$> netstat -pan | grep :80
+# On Linux/Mac
+$> netstat -an | grep 80
 ```
 
 ### Forgetting a server
