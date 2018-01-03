@@ -34,14 +34,18 @@ The module will first remove any host names that you previously assigned *to the
 
 Often your applicaiton will require multiple hosts to function correctly. This can be the case with multi-tenant and/or multi-portal applcations.
 
-Edit your `server.json` to use an array of hostnames.
+Pass an alias via the CLI:
+```bash
+CommandBox> server set web.hostAlias=www.myproject.local
+```
+
+To use more than one alias, edit your `server.json` to use an array of hostnames.
 
 ```bash
-
 {
 	"web": {
-		"host": [
-			"project.local",
+		"host": "project.local",
+		"hostAlias": [
 			"www.project.local",
 			"portalA.project.local",
 			"portalB.project.local"
