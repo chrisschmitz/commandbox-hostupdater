@@ -49,7 +49,7 @@ Edit your `server.json` to use an array of hostnames.
 	}
 }
 ```
-The module will concert this array into space-delimited list and make a single entry in the hosts file as previously described.
+The module will convert the array to a space-delimited list and update the hosts file as previously described.
 
 ### Location of the hosts file
 
