@@ -1,6 +1,6 @@
 {
     "name":"CommandBox Host Updater",
-    "version":"1.3.1",
+    "version":"1.4.0",
     "author":"Christoph Schmitz",
     "homepage":"https://github.com/chrisschmitz/commandbox-hostupdater/",
     "documentation":"https://github.com/chrisschmitz/commandbox-hostupdater/README.md",
@@ -8,7 +8,7 @@
         "type":"Git",
         "URL":"https://github.com/chrisschmitz/commandbox-hostupdater/"
     },
-    "location":"chrisschmitz/commandbox-hostupdater#v1.3.1",
+    "location":"chrisschmitz/commandbox-hostupdater#v1.4.0",
     "bugs":"https://github.com/chrisschmitz/commandbox-hostupdater/issues",
     "slug":"commandbox-hostupdater",
     "shortDescription":"Adds the host name you assign to a CommandBox server to the hosts file.",
@@ -17,7 +17,6 @@
     "projectURL":"https://github.com/chrisschmitz/commandbox-hostupdater/",
     "scripts":{
         "postVersion":"package set location='chrisschmitz/commandbox-hostupdater#v`package version`'",
-        "onRelease":"publish",
-        "postPublish":"!git push && !git push --tags"
+        "onRelease":"publish"
     }
 }
