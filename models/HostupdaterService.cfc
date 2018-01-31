@@ -1,78 +1,121 @@
 component accessors="true" singleton {
 	property name='printBuffer'   inject='PrintBuffer';
 	property name='fileSystem' 	  inject='FileSystem';
-	
-	public any function init() {
+	property name='wb'			  inject="WireBox";
+	property name="hostsFile";
+	property name="hostsFileReadable";
+	property name="hostsFileWritable";
+	property name="hosts";
+
+	public any function init( any fileSystem inject="FileSystem" ) {
+		variables.fileSystem = arguments.fileSystem;
+		checkHostsFile();
 		
 		return this;
 	}
 
-	public void function checkIP ( string server_id, string hostname='' ) {
+	public void function checkIP ( string server_id, array hostnames=[] ) {
 		
-		// get os-specific location of hosts file
-		var hostsFile = getHostsFileName();
 
-		// check hosts file only if we have a file location and if the provided host name is not an ip address
-		if ( hostsFile.len() && arguments.hostname.reFindNoCase( '[a-z]' ) ) {
-			var hosts = readHostsFileAsArray( hostsFile ); 
+		// check hosts file only if we have a file location and if the provided host name array is not empty
+		if ( variables.hostsFile.len() && arguments.hostnames.len() ) {
+			variables.hostaliases = readHostsFileAsArray( hostsFile ); 
 
-			// remove all lines that already contain either the server id or the host name
+			// remove all lines that already contain the server id 
 			// that way we can make sure that the hosts file doesn't grow indefinitely upon
 			// changing the host name for an existing server
-			hosts =  removeMatchingLines( hosts, [arguments.hostname,arguments.server_id] );
+			removeOldEntriesFromHostsfile( arguments.server_id );
 
-			variables.printBuffer.greenLine( "Adding host '#arguments.hostname#' to your hosts file!" ).toConsole(); 
-			var new_ip = getNewIP( hosts.toList( server.separator.line ) );
-			// add the line for the new host entry
-			hosts.append( "#new_ip#	#arguments.hostname# ## CommandBox: Server #arguments.server_id# #dateTimeFormat( now(), 'yyyy-mm-dd HH:nn:ss' )#" );
+			var new_ip = getNewIP( variables.hostaliases.toList( server.separator.line ) );
+
+			for( var hostname in arguments.hostnames ) {
+				variables.printBuffer.greenLine( "Adding host '#hostname#' to your hosts file!" ).toConsole();
+				// remove any line matching the current host name
+				// in order to avoid duplicate entries
+				removeOldEntriesFromHostsfile( hostname );
+
+				// add the line for the new host entry
+				addNewHostname( "#new_ip#     #hostname# ## CommandBox: Server #arguments.server_id# #dateTimeFormat( now(), 'yyyy-mm-dd HH:nn:ss' )#" );
+			}
 			
-			// concatenate the array
-			saveHostsFile( hostsFile, hosts.toList( server.separator.line ) );
-			
-			// Give the OS a chance to write the file
-			sleep( 300 );
+			// on Windows only: write to hosts file (on *nix hosts file is modified directly by sed)
+			if( variables.fileSystem.isWindows() )
+				saveHostsFile();
 		}
+
+		return;
+	}
+
+	private void function checkHostsFile() {
+
+		// get os-specific location of hosts file
+		variables.hostsFile = getHostsFileName();
+
+		var hostsFileReader = createObject( 'java', 'java.io.File').init( hostsFile );
+		variables.hostsFileReadable = hostsFileReader.canRead();
+		variables.hostsFileWritable = hostsFileReader.canWrite();
 
 		return;
 	}
 
 	public void function forgetServer( required string server_id ){
-		var hostsFile = getHostsFileName();
-		var hosts = readHostsFileAsArray( hostsFile );
+		variables.hostaliases = readHostsFileAsArray( );
 
-		variables.printBuffer.greenLine( "Removing host for server '#arguments.server_id#' from your hosts file!" ).toConsole(); 
+		variables.printBuffer.greenLine( "Removing host(s) for server '#arguments.server_id#' from your hosts file!" ).toConsole(); 
 
 		// remove all lines that contain the server id 
-		// and concatenate the array  
-		hosts = removeMatchingLines( hosts, [arguments.server_id] )
-				.toList( server.separator.line ); 
+		removeOldEntriesFromHostsfile( arguments.server_id );
 
-		saveHostsFile( hostsFile, hosts );
+		if( variables.fileSystem.isWindows() )
+			saveHostsFile();
 		
 		return;
 	}
 
 	private string function getHostsFileName() {
-		return  variables.fileSystem.isWindows() ? 'C:/Windows/system32/drivers/etc/hosts' :
+		return  variables.fileSystem.isWindows() ? 'C:\Windows\system32\drivers\etc\hosts' :
 				variables.fileSystem.isMac() 	 ? '/private/etc/hosts' :
 				variables.fileSystem.isLinux() 	 ? '/etc/hosts'		  :
 				'';
 	}
 
-	private array function readHostsFileAsArray( required string hostsFile ) {
-		return fileRead( arguments.hostsFile ).listToArray( server.separator.line );
+	private array function readHostsFileAsArray() {
+		return fileRead( variables.hostsFile ).listToArray( server.separator.line );
 	}
 
-	private any function removeMatchingLines( required array hosts, required array expressions ){
+	private void function removeOldEntriesFromHostsfile( required string id_or_hostname ){
+
+		if( !variables.fileSystem.isWindows() )
+			sudo( "sed -i 's/.*#arguments.id_or_hostname.replace('.', '\.', 'all')#.*//' #getHostsFileName()#" );
+		else
+			removeMatchingLines( [id_or_hostname] );
 		
+		return;
+	}
+
+	private void function removeMatchingLines( required array expressions ){
+		
+		if( !isArray( variables.hostaliases ) || !variables.hostaliases.len() )
+			variables.hostaliases = readHostsFileAsArray();
+
 		for( var elem in arguments.expressions ) {
-			arguments.hosts = arguments.hosts.filter( function( line ) {
+			variables.hostaliases = variables.hostaliases.filter( function( line ) {
 			 					return !line.listFindNoCase( elem, ' 	' ); 
 							  });
 		}
 		
-		return arguments.hosts;
+		return;
 	}	
+
+	private void function addNewHostname( required string entry ){
+
+		if( !variables.fileSystem.isWindows() ) 
+			sudo( "sed -i '$ a #arguments.entry#'  #getHostsFileName()#" );
+		else
+			 variables.hostaliases.append( arguments.entry );
+
+		return;
+	}
 
 	private string function getNewIP( required string hosts ) {
 		// get all 127.127.xxx.yyy entries
@@ -110,15 +153,27 @@ component accessors="true" singleton {
 		return new_ip;
 	}
 
-	private void function saveHostsFile( string fileName, string fileContent ) {
+	private void function saveHostsFile() {
 		try {
-			fileWrite( arguments.fileName, arguments.fileContent );
+			fileWrite( variables.hostsFile, variables.hostaliases.toList( server.separator.line )  );
+			// Give the OS a chance to write the file
+			sleep( 300 );
 		}
 		catch ( any e ) {
-			variables.printBuffer.boldRedLine( "Can't write to hosts file. Did you remember to start CommandBox with admin privileges?" ).toConsole();
+			variables.printBuffer.boldRedLine( "Can't write to hosts file. Did you remember to start CommandBox with " & ( variables.fileSystem.isWindows() ? "admin" : "root" ) & " privileges?" ).toConsole();
 		}
 
 		return;
 	}
 	
+	private any function sudo( required string cmdstring ){
+		try {
+			return wb.getinstance( name='CommandDSL', initArguments={ name : "run sudo " & arguments.cmdstring  } )
+			.run(echo:false);
+		}
+		catch ( any e ){
+			variables.printBuffer.boldRedLine( "Oh my! Something went wrong when trying to modify the hosts file!" ).toConsole();
+		}
+	}
+
 }
