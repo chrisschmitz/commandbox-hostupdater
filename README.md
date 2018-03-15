@@ -69,12 +69,24 @@ CommandBox> server set web.hostAlias=www.project.local
 
 ### System variables
 
-You can use system variables as a host name, e.g.
+You can use system variables as a host name, both on the command line
 ```bash
 >server start name=myserver host=${HOST:127.0.0.1}
 ```
 
-The module will evaluate the value of the system variable and add that as a host name to your hosts file
+as well as in `server.json`:
+
+```bash
+{
+	"web": {
+		"host": "${HOST:127.0.0.1}"
+	}
+}
+```
+
+The module will evaluate the value of the system variable and add that as a host name to your hosts file.
+
+**Note** Do NOT escape the `$`sign!
 
 ### Location of the hosts file
 
