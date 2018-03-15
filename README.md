@@ -67,6 +67,15 @@ CommandBox> server set web.hostAlias=www.project.local
 
 *Please note:* If you specify host aliases when starting the server, these aliases will be added to server.json, but *not* in the web section. (That would have required a modification of the core CommandBox files.) In order to keep the flexibility, hostAliases will be recognized both inside and outside of the `web` section. 
 
+### System variables
+
+You can use system variables as a host name, e.g.
+```bash
+>server start name=myserver host=${HOST:127.0.0.1}
+```
+
+The module will evaluate the value of the system variable and add that as a host name to your hosts file
+
 ### Location of the hosts file
 
 The module assumes the following paths to the hosts file 

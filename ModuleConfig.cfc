@@ -1,4 +1,5 @@
 component accessors=true {
+	
 	public any function configure() {
 		return;
 	}
@@ -14,7 +15,8 @@ component accessors=true {
 						arguments.interceptData.serverDetails.serverJSON.hostAlias 		?:		// hostAlias provided in server.json?
 						[];																		// if nothing was provided, use default (empty array)
 
-
+		var systemSettings = wirebox.getInstance( 'SystemSettings' );
+		
 		if( !isArray( aliases ))
 			aliases = aliases.listToArray();
 
@@ -26,8 +28,14 @@ component accessors=true {
 		var ary = duplicate( aliases);
 		ary = ary.prepend( hostname )
 					.reduce( function( arr, alias ){
-					if( alias.reFindNoCase( '[a-z]') && !arr.find( alias ) )
+					if( alias.reFindNoCase( '[$a-z]') && !arr.find( alias ) ){
+						// [CS] [2018-03-15] if the alias is a system var, use the evaluated value
+						if( left( alias, 1 ) == '$' )
+							alias = systemSettings.expandSystemSettings( alias );
+
 						arr.append( alias );
+
+					}
 
 					return arr;
 					}, [] );
