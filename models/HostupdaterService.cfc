@@ -1,5 +1,5 @@
 component accessors="true" singleton {
-	property name='printBuffer'   inject='PrintBuffer';
+	property name='consoleLogger' inject='logbox:logger:console';
 	property name='fileSystem' 	  inject='FileSystem';
 	property name='wb'			  inject="WireBox";
 	property name="hostsFile";
@@ -29,7 +29,7 @@ component accessors="true" singleton {
 			var new_ip = getNewIP( variables.hostaliases.toList( server.separator.line ) );
 
 			for( var hostname in arguments.hostnames ) {
-				variables.printBuffer.greenLine( "Adding host '#hostname#' to your hosts file!" ).toConsole();
+				variables.consoleLogger.info( "Adding host '#hostname#' to your hosts file!" );
 				// remove any line matching the current host name
 				// in order to avoid duplicate entries
 				removeOldEntriesFromHostsfile( hostname );
@@ -61,7 +61,7 @@ component accessors="true" singleton {
 	public void function forgetServer( required string server_id ){
 		variables.hostaliases = readHostsFileAsArray( );
 
-		variables.printBuffer.greenLine( "Removing host(s) for server '#arguments.server_id#' from your hosts file!" ).toConsole(); 
+		variables.consoleLogger.info( "Removing host(s) for server '#arguments.server_id#' from your hosts file!" ); 
 
 		// remove all lines that contain the server id 
 		removeOldEntriesFromHostsfile( arguments.server_id );
@@ -155,12 +155,12 @@ component accessors="true" singleton {
 
 	private void function saveHostsFile() {
 		try {
-			fileWrite( variables.hostsFile, variables.hostaliases.toList( server.separator.line )  );
+			fileWrite( variables.hostsFile, variables.hostaliases.toList( server.separator.line )  )
 			// Give the OS a chance to write the file
 			sleep( 300 );
 		}
 		catch ( any e ) {
-			variables.printBuffer.boldRedLine( "Can't write to hosts file. Did you remember to start CommandBox with " & ( variables.fileSystem.isWindows() ? "admin" : "root" ) & " privileges?" ).toConsole();
+			variables.consoleLogger.error( "Can't write to hosts file. Did you remember to start CommandBox with " & ( variables.fileSystem.isWindows() ? "admin" : "root" ) & " privileges?" );
 		}
 
 		return;
@@ -172,7 +172,7 @@ component accessors="true" singleton {
 			.run(echo:false);
 		}
 		catch ( any e ){
-			variables.printBuffer.boldRedLine( "Oh my! Something went wrong when trying to modify the hosts file!" ).toConsole();
+			variables.consoleLogger.error( "Oh my! Something went wrong when trying to modify the hosts file!" );
 		}
 	}
 
