@@ -85,11 +85,15 @@ component accessors="true" singleton {
 
 	private void function removeOldEntriesFromHostsfile( required string id_or_hostname ){
 
-		if( !variables.fileSystem.isWindows() )
-			sudo( "sed -i 's/.*#arguments.id_or_hostname.replace('.', '\.', 'all')#.*//' #getHostsFileName()#" );
-		else
+		if( !variables.fileSystem.isWindows() ) {
+			if( variables.fileSystem.isMac() ) {
+				sudo( "sed -i '' '/.*#arguments.id_or_hostname.replace('.', '\.', 'all')#.*/d' #getHostsFileName()#" );
+			} else {
+				sudo( "sed -i '/.*#arguments.id_or_hostname.replace('.', '\.', 'all')#.*/d' #getHostsFileName()#" );
+			}
+		} else {
 			removeMatchingLines( [id_or_hostname] );
-		
+		}
 		return;
 	}
 
@@ -109,10 +113,15 @@ component accessors="true" singleton {
 
 	private void function addNewHostname( required string entry ){
 
-		if( !variables.fileSystem.isWindows() ) 
-			sudo( "sed -i '$ a #arguments.entry#'  #getHostsFileName()#" );
-		else
+		if( !variables.fileSystem.isWindows() ) {
+			if( variables.fileSystem.isMac() ) {
+				sudo( "sed -i '' '$ a\'$'\n''#arguments.entry#'  #getHostsFileName()#" );
+			} else {
+				sudo( "sed -i '$ a #arguments.entry#'  #getHostsFileName()#" );
+			}
+		} else {
 			 variables.hostaliases.append( arguments.entry );
+		}
 
 		return;
 	}
@@ -148,8 +157,7 @@ component accessors="true" singleton {
 		// in order for it to accept other addresses, we must tell
 		// MacOS that this new address is a local loopback address, too
 		if( variables.fileSystem.isMac() )
-			cfexecute (name="ifconfig" arguments="lo0 alias #new_ip# up");
-
+			sudo( "ifconfig lo0 alias #new_ip# up" );
 		return new_ip;
 	}
 
@@ -170,6 +178,7 @@ component accessors="true" singleton {
 		try {
 			return wb.getinstance( name='CommandDSL', initArguments={ name : "run sudo " & arguments.cmdstring  } )
 			.run(echo:false);
+			//variables.printBuffer.boldRedLine( arguments.cmdstring ).toConsole();
 		}
 		catch ( any e ){
 			variables.printBuffer.boldRedLine( "Oh my! Something went wrong when trying to modify the hosts file!" ).toConsole();
