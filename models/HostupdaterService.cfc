@@ -115,7 +115,7 @@ component accessors="true" singleton {
 
 		if( !variables.fileSystem.isWindows() ) {
 			if( variables.fileSystem.isMac() ) {
-				sudo( "sed -i '' '$ a\'$'\n''#arguments.entry#'  #getHostsFileName()#" );
+				sudo( "echo '#arguments.entry#' >> #getHostsFileName()#" );
 			} else {
 				sudo( "sed -i '$ a #arguments.entry#'  #getHostsFileName()#" );
 			}
