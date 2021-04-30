@@ -27,7 +27,7 @@ component accessors=true {
 
 		var ary = duplicate( aliases);
 		ary = ary.prepend( hostname )
-					.reduce( function( arr, alias ){
+					.reduce( ( arr, alias ) => {
 					if( alias.reFindNoCase( '[$a-z]') && !arr.find( alias ) ){
 						// [CS] [2018-03-15] if the alias is a system var, use the evaluated value
 						if( left( alias, 1 ) == '$' )
@@ -38,7 +38,8 @@ component accessors=true {
 					}
 
 					return arr;
-					}, [] );
+					}, [] )
+					.filter( ( host ) => host != 'localhost' );
 
 		wirebox.getInstance( 'hostupdaterService@commandbox-hostupdater' ).checkIP( arguments.interceptData.serverDetails.serverInfo.id, ary );
 		
