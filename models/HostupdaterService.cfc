@@ -86,10 +86,12 @@ component accessors="true" singleton {
 	private void function removeOldEntriesFromHostsfile( required string id_or_hostname ){
 
 		if( !variables.fileSystem.isWindows() ) {
-			if( variables.fileSystem.isMac() ) {
-				sudo( "sed -i '' '/.*#arguments.id_or_hostname.replace('.', '\.', 'all')#.*/d' #getHostsFileName()#" );
-			} else {
-				sudo( "sed -i '/.*#arguments.id_or_hostname.replace('.', '\.', 'all')#.*/d' #getHostsFileName()#" );
+			local.sedOptArg = variables.fileSystem.isMac() ? " ''" : ""; 
+			// remove by hostname
+			sudo( "sed -E -i#local.sedOptArg# '/127\.[0-9.]+ +#arguments.id_or_hostname.replace('.', '\.', 'all')# .+/d' #getHostsFileName()#" );
+			// remove by id, if it is very probably an id
+			if (len(arguments.id_or_hostname) gte 32 and refind('[0-9A-Fa-f]{32}', arguments.id_or_hostname) eq 1) {
+				sudo( "sed -i#local.sedOptArg# '/.* #arguments.id_or_hostname# .*/d' #getHostsFileName()#" );
 			}
 		} else {
 			removeMatchingLines( [id_or_hostname] );
