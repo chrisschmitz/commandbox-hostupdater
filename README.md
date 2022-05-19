@@ -1,3 +1,8 @@
+**PLEASE NOTE**
+V 1.9.1 will be the last active version in **this** repo. I handed the Source Forge repo over to the awesome guys at Ortus solutions in order to provide updates and fixes in a timely manner. 
+
+**Please be sure to get your version from https://www.forgebox.io/view/commandbox-hostupdater**
+
 If you're like me, you prefer host names over IP addresses for your local development. This module will save you the trouble of firing up an editor as administrator and edit the hosts file manually. It will add the host name you assigned to your server to the hosts file and assign a local ip address to that host name.  And since the module uses a different IP address for each commandbox server, that means all your local sites can run on port 80 simultaneously!
 
 ## Requirements
