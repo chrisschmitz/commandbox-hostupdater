@@ -178,7 +178,7 @@ component accessors="true" singleton {
 	
 	private any function sudo( required string cmdstring ){
 		try {
-			return wb.getinstance( name='CommandDSL', initArguments={ name : "run sudo " & arguments.cmdstring  } )
+			return wb.getinstance( name='CommandDSL', initArguments={ name : 'run sudo sh -c "' & arguments.cmdstring & '"'  } )
 			.run(echo:false);
 			//variables.printBuffer.boldRedLine( arguments.cmdstring ).toConsole();
 		}
